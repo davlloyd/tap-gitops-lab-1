@@ -1,0 +1,56 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: surfersapi
+  annotations:
+    ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
+    ootb.apps.tanzu.vmware.com/apidescriptor-ref: "true"
+    kapp.k14s.io/change-rule: upsert after upserting servicebinding.io/ServiceBindings
+  labels:
+    apis.apps.tanzu.vmware.com/register-api: "true"
+    app.kubernetes.io/part-of: surferslookout
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/language: python
+    apps.tanzu.vmware.com/workload-type: web
+    component: backend
+    deployment-model: blue-green
+    app.kubernetes.io/component: run
+    carto.run/workload-name: surfersapi
+spec:
+  template:
+    metadata:
+      annotations:
+        apps.tanzu.vmware.com/correlationid: https://github.com/davlloyd/surfers-api?sub_path=/
+        autoscaling.knative.dev/initial-scale: "1"
+        autoscaling.knative.dev/max-scale: "50"
+        autoscaling.knative.dev/metric: rps
+        autoscaling.knative.dev/min-scale: "1"
+        autoscaling.knative.dev/scale-down-delay: 2s
+        autoscaling.knative.dev/target: "50"
+        autoscaling.knative.dev/window: 10s
+        conventions.carto.run/applied-conventions: |-
+          appliveview-sample/app-live-view-appflavour-check
+          spring-boot-convention/auto-configure-actuators-check
+          spring-boot-convention/app-live-view-appflavour-check
+        developer.conventions/target-containers: workload
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"carto.run/v1alpha1","kind":"Workload","metadata":{"annotations":{},"labels":{"apis.apps.tanzu.vmware.com/register-api":"true","app.kubernetes.io/part-of":"surferslookout","apps.tanzu.vmware.com/has-tests":"true","apps.tanzu.vmware.com/language":"python","apps.tanzu.vmware.com/workload-type":"web","component":"backend","deployment-model":"blue-green"},"name":"surfersapi","namespace":"beta"},"spec":{"params":[{"name":"clusterBuilder","value":"full-jammy"},{"name":"testing_pipeline_matching_labels","value":{"apps.tanzu.vmware.com/language":"python"}},{"name":"annotations","value":{"autoscaling.knative.dev/initial-scale":"1","autoscaling.knative.dev/max-scale":"50","autoscaling.knative.dev/metric":"rps","autoscaling.knative.dev/min-scale":"1","autoscaling.knative.dev/scale-down-delay":"2s","autoscaling.knative.dev/target":"50","autoscaling.knative.dev/window":"10s"}},{"name":"api_descriptor","value":{"description":"Surferslookout forecast api","location":{"path":"/api/v1/api-docs"},"owner":"group:surfers-crew","system":"surferslookout","type":"openapi"}},{"name":"git_user_email","value":"davidlloyd0@gmail.com"},{"name":"git_user_name","value":"davlloyd"}],"source":{"git":{"ref":{"branch":"main"},"url":"https://github.com/davlloyd/surfers-api"}}}}
+      labels:
+        apis.apps.tanzu.vmware.com/register-api: "true"
+        app.kubernetes.io/component: run
+        app.kubernetes.io/part-of: surferslookout
+        apps.tanzu.vmware.com/has-tests: "true"
+        apps.tanzu.vmware.com/language: python
+        apps.tanzu.vmware.com/workload-type: web
+        carto.run/workload-name: surfersapi
+        component: backend
+        deployment-model: blue-green
+    spec:
+      containers:
+      - image: harbor.services.tanzu.rocks/tap-lab/supply-chain/surfersapi-beta@sha256:4167054ac4c73deeca48ffdaaf9831beec16d41d2888ddb855bccc93ba974d10
+        name: workload
+        resources: {}
+        securityContext:
+          runAsUser: 1000
+      serviceAccountName: default
+
