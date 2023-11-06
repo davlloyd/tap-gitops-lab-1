@@ -42,7 +42,7 @@ spec:
       - env:
         - name: COLOR
           value: yellow
-        image: harbor.services.tanzu.rocks/tap-lab/supply-chain/afp-demo-alpha@sha256:775bddf72fc1421b650347b327a932afdd8369ff3ad4765a79e0667ba521b632
+        image: harbor.services.tanzu.rocks/tap-lab/supply-chain/afp-demo-alpha@sha256:87404c701b87152c7860113f44fd8028ef47b96d04db4d969360a5d314b7dc2d
         name: workload
         resources: {}
         securityContext:
